@@ -1,1 +1,0 @@
-# aidd.tokyo infra
