@@ -1,5 +1,28 @@
 ---
 import '../styles/global.css';
+
+const heroImage = '/images/hero-ai-workshop.webp';
+const heroFallbackImage = '/images/hero-ai-workshop.png';
+
+const activities = [
+  {
+    title: '実践ノート',
+    description:
+      'AIエージェント、プロンプト、レビュー、テスト運用など、開発現場で試した知見を短く共有します。',
+  },
+  {
+    title: '勉強会・ハンズオン',
+    description:
+      '少人数で手を動かしながら、AI駆動開発の使いどころと限界を検証する場をつくります。',
+  },
+  {
+    title: 'ツール検証',
+    description:
+      'Claude Code、Codex、エディタ統合、CI連携などを、実装フローに組み込む観点で比較します。',
+  },
+];
+
+const principles = ['小さく検証する', 'コードで確かめる', '知見を公開する'];
 ---
 
 <html lang="ja">
@@ -7,20 +30,157 @@ import '../styles/global.css';
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
 		<title>aidd.tokyo — AI駆動開発コミュニティ</title>
-		<meta name="description" content="aidd.tokyo は AI駆動開発 (AI-Driven Development) の学習・実践・コミュニティ活動の拠点です。" />
+		<meta
+			name="description"
+			content="aidd.tokyo は AI駆動開発 (AI-Driven Development) を学び、試し、共有する東京発のコミュニティです。"
+		/>
+		<link rel="canonical" href="https://aidd.tokyo/" />
+		<link rel="preload" as="image" href={heroImage} type="image/webp" />
+		<meta name="theme-color" content="#0f172a" />
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="aidd.tokyo" />
+		<meta property="og:title" content="aidd.tokyo — AI駆動開発コミュニティ" />
+		<meta
+			property="og:description"
+			content="AI駆動開発を、現場で使える知識と実践へ。"
+		/>
+		<meta property="og:url" content="https://aidd.tokyo/" />
+		<meta property="og:image" content="https://aidd.tokyo/images/hero-ai-workshop.png" />
+		<meta name="twitter:card" content="summary_large_image" />
 	</head>
-	<body class="bg-white text-slate-900 antialiased">
-		<main class="mx-auto max-w-3xl px-6 py-16">
-			<h1 class="text-4xl font-bold tracking-tight">aidd.tokyo</h1>
-			<p class="mt-4 text-lg text-slate-600">
-				AI駆動開発 (AI-Driven Development) の学習・実践・コミュニティ活動の拠点。
-			</p>
-			<p class="mt-8 text-sm text-slate-500">
-				サイトは現在準備中です。
-			</p>
+	<body class="bg-stone-50 text-slate-950 antialiased">
+		<header class="absolute inset-x-0 top-0 z-20">
+			<nav class="mx-auto flex max-w-6xl items-center justify-between px-5 py-5 sm:px-8" aria-label="メインナビゲーション">
+				<a href="/" class="text-base font-semibold text-white">aidd.tokyo</a>
+				<div class="flex items-center gap-1 rounded-full border border-white/15 bg-slate-950/35 p-1 text-sm text-white/85 backdrop-blur">
+					<a class="rounded-full px-3 py-2 transition hover:bg-white/12 hover:text-white" href="#activities">活動</a>
+					<a class="rounded-full px-3 py-2 transition hover:bg-white/12 hover:text-white" href="#journal">記事</a>
+					<a class="rounded-full px-3 py-2 transition hover:bg-white/12 hover:text-white" href="#events">イベント</a>
+				</div>
+			</nav>
+		</header>
+
+		<main>
+			<section class="relative isolate min-h-[82svh] overflow-hidden bg-slate-950 text-white">
+				<picture class="absolute inset-0 -z-20 h-full w-full">
+					<source srcset={heroImage} type="image/webp" />
+					<img
+						src={heroFallbackImage}
+						alt="AI駆動開発のワークショップをイメージした作業風景"
+						class="h-full w-full object-cover"
+						width="1774"
+						height="887"
+						loading="eager"
+						decoding="async"
+					/>
+				</picture>
+				<div class="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(2,6,23,0.92)_0%,rgba(15,23,42,0.72)_44%,rgba(15,23,42,0.18)_100%)]"></div>
+				<div class="mx-auto flex min-h-[82svh] max-w-6xl items-end px-5 pb-14 pt-28 sm:px-8 lg:pb-18">
+					<div class="max-w-3xl">
+						<p class="text-sm font-semibold uppercase text-cyan-200">AI-Driven Development Community</p>
+						<h1 class="mt-5 text-5xl font-bold leading-[0.98] sm:text-6xl lg:text-7xl">aidd.tokyo</h1>
+						<p class="mt-6 max-w-2xl text-xl leading-8 text-slate-100 sm:text-2xl sm:leading-9">
+							AI駆動開発を、現場で使える知識と実践へ。
+						</p>
+						<p class="mt-5 max-w-2xl text-base leading-8 text-slate-200 sm:text-lg">
+							AIエージェント時代のソフトウェア開発を、学び、試し、共有する東京発のコミュニティです。
+						</p>
+						<div class="mt-9 flex flex-wrap gap-3">
+							<a
+								href="#activities"
+								class="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-slate-950 transition hover:bg-cyan-100"
+							>
+								活動を見る
+							</a>
+							<a
+								href="#events"
+								class="inline-flex min-h-12 items-center justify-center rounded-full border border-white/30 px-5 text-sm font-semibold text-white transition hover:bg-white/12"
+							>
+								イベント情報
+							</a>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section id="activities" class="border-b border-slate-200 bg-white">
+				<div class="mx-auto grid max-w-6xl gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:py-20">
+					<div>
+						<p class="text-sm font-semibold text-red-600">What we do</p>
+						<h2 class="mt-3 text-3xl font-bold text-slate-950 sm:text-4xl">学びを実装に近づける</h2>
+						<p class="mt-5 text-base leading-8 text-slate-600">
+							流行の紹介で終わらせず、開発プロセスの中でどう使えるかをコード、レビュー、運用の観点で確認します。
+						</p>
+					</div>
+					<div class="grid gap-4 sm:grid-cols-3">
+						{
+							activities.map((item) => (
+								<article class="rounded-lg border border-slate-200 bg-stone-50 p-5 shadow-sm">
+									<h3 class="text-lg font-semibold text-slate-950">{item.title}</h3>
+									<p class="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
+								</article>
+							))
+						}
+					</div>
+				</div>
+			</section>
+
+			<section id="journal" class="bg-stone-50">
+				<div class="mx-auto grid max-w-6xl gap-8 px-5 py-16 sm:px-8 lg:grid-cols-[1fr_1fr] lg:py-20">
+					<div>
+						<p class="text-sm font-semibold text-cyan-700">Journal</p>
+						<h2 class="mt-3 text-3xl font-bold text-slate-950 sm:text-4xl">記事とチュートリアル</h2>
+					</div>
+					<div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+						<p class="text-base leading-8 text-slate-700">
+							記事コンテンツは準備中です。AIエージェントの使い方、レビュー設計、テスト自動化、チーム導入の記録などを順次公開します。
+						</p>
+						<div class="mt-6 flex flex-wrap gap-2">
+							{principles.map((principle) => (
+								<span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-700">
+									{principle}
+								</span>
+							))}
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section id="events" class="bg-slate-950 text-white">
+				<div class="mx-auto grid max-w-6xl gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:py-20">
+					<div>
+						<p class="text-sm font-semibold text-cyan-200">Events</p>
+						<h2 class="mt-3 text-3xl font-bold sm:text-4xl">勉強会とハンズオン</h2>
+						<p class="mt-5 text-base leading-8 text-slate-300">
+							初回イベントに向けてテーマと運営形式を設計しています。公開後はこのページから予定と参加方法を確認できます。
+						</p>
+					</div>
+					<div class="grid gap-4 sm:grid-cols-3">
+						<div class="rounded-lg border border-white/12 bg-white/8 p-5">
+							<p class="text-sm font-semibold text-cyan-200">01</p>
+							<p class="mt-3 text-base font-semibold">実装デモ</p>
+						</div>
+						<div class="rounded-lg border border-white/12 bg-white/8 p-5">
+							<p class="text-sm font-semibold text-cyan-200">02</p>
+							<p class="mt-3 text-base font-semibold">ワークショップ</p>
+						</div>
+						<div class="rounded-lg border border-white/12 bg-white/8 p-5">
+							<p class="text-sm font-semibold text-cyan-200">03</p>
+							<p class="mt-3 text-base font-semibold">知見共有</p>
+						</div>
+					</div>
+				</div>
+			</section>
 		</main>
+
+		<footer class="bg-white">
+			<div class="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-8 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+				<p class="font-semibold text-slate-900">aidd.tokyo</p>
+				<p>AI駆動開発の学習・実践・共有コミュニティ</p>
+			</div>
+		</footer>
 	</body>
 </html>
