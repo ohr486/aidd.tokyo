@@ -61,7 +61,15 @@ pnpm preview
 
 ### 記事
 
-`src/content/articles/<slug>.mdx` を新規作成し、フロントマターを記述する。
+`src/content/articles/<slug>.mdx` を新規作成する。`<slug>` が公開URLになる。
+
+例:
+
+| ファイル | 公開URL |
+|---|---|
+| `src/content/articles/ai-driven-development-first-step.mdx` | `/articles/ai-driven-development-first-step/` |
+
+フロントマターは次の形式で記述する。
 
 ```mdx
 ---
@@ -69,9 +77,38 @@ title: 記事タイトル
 description: 概要 (一覧表示・OGP に使用)
 publishedAt: 2026-06-06
 tags: [claude-code, tutorial]
+author: aidd.tokyo
 ---
 
 本文をMarkdown / MDX で記述。
+```
+
+必要に応じて次の項目も使える。
+
+```mdx
+updatedAt: 2026-06-10
+draft: true
+```
+
+- `draft: true` の記事は公開対象から除外される。
+- TOPページの「記事とチュートリアル」には、`draft` ではない記事が `publishedAt` の新しい順に最大3件表示される。
+- 記事詳細ページは `/articles/<slug>/` に生成される。
+- `tags` は `/tags/` のタグ一覧に表示され、タグ別の記事一覧は `/tags/<tag>/` に生成される。
+
+記事を追加したらローカルで確認する。
+
+```bash
+cd site
+pnpm dev
+```
+
+ブラウザで `http://localhost:4321/` を開き、TOPページから記事へ移動できることを確認する。直接確認する場合は `http://localhost:4321/articles/<slug>/` を開く。タグ一覧は `http://localhost:4321/tags/` で確認できる。
+
+公開前に型チェックとビルドを実行する。
+
+```bash
+pnpm check
+pnpm build
 ```
 
 ### イベント

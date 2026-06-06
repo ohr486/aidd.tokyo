@@ -1,4 +1,5 @@
 ---
+import { getCollection } from 'astro:content';
 import '../styles/global.css';
 
 const heroImage = '/images/hero-ai-workshop.webp';
@@ -23,6 +24,17 @@ const activities = [
 ];
 
 const principles = ['小さく検証する', 'コードで確かめる', '知見を公開する'];
+
+const articles = (await getCollection('articles', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+  .slice(0, 3);
+const latestArticle = articles[0];
+
+const dateFormatter = new Intl.DateTimeFormat('ja-JP', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
 ---
 
 <html lang="ja">
@@ -56,9 +68,10 @@ const principles = ['小さく検証する', 'コードで確かめる', '知見
 			<nav class="mx-auto flex max-w-6xl items-center justify-between px-5 py-5 sm:px-8" aria-label="メインナビゲーション">
 				<a href="/" class="text-base font-semibold text-white">aidd.tokyo</a>
 				<div class="flex items-center gap-1 rounded-full border border-white/15 bg-slate-950/35 p-1 text-sm text-white/85 backdrop-blur">
-					<a class="rounded-full px-3 py-2 transition hover:bg-white/12 hover:text-white" href="#activities">活動</a>
-					<a class="rounded-full px-3 py-2 transition hover:bg-white/12 hover:text-white" href="#journal">記事</a>
-					<a class="rounded-full px-3 py-2 transition hover:bg-white/12 hover:text-white" href="#events">イベント</a>
+					<a class="rounded-full px-2.5 py-2 transition hover:bg-white/12 hover:text-white sm:px-3" href="/about/">About</a>
+					<a class="rounded-full px-2.5 py-2 transition hover:bg-white/12 hover:text-white sm:px-3" href="#activities">活動</a>
+					<a class="rounded-full px-2.5 py-2 transition hover:bg-white/12 hover:text-white sm:px-3" href="#journal">記事</a>
+					<a class="rounded-full px-2.5 py-2 transition hover:bg-white/12 hover:text-white sm:px-3" href="#events">イベント</a>
 				</div>
 			</nav>
 		</header>
@@ -101,6 +114,12 @@ const principles = ['小さく検証する', 'コードで確かめる', '知見
 							>
 								イベント情報
 							</a>
+							<a
+								href="/about/"
+								class="inline-flex min-h-12 items-center justify-center rounded-full border border-white/30 px-5 text-sm font-semibold text-white transition hover:bg-white/12"
+							>
+								概要を読む
+							</a>
 						</div>
 					</div>
 				</div>
@@ -133,18 +152,81 @@ const principles = ['小さく検証する', 'コードで確かめる', '知見
 					<div>
 						<p class="text-sm font-semibold text-cyan-700">Journal</p>
 						<h2 class="mt-3 text-3xl font-bold text-slate-950 sm:text-4xl">記事とチュートリアル</h2>
-					</div>
-					<div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-						<p class="text-base leading-8 text-slate-700">
-							記事コンテンツは準備中です。AIエージェントの使い方、レビュー設計、テスト自動化、チーム導入の記録などを順次公開します。
+						<p class="mt-5 text-base leading-8 text-slate-600">
+							AIエージェントの使い方、レビュー設計、テスト自動化、チーム導入の記録などを公開していきます。
 						</p>
-						<div class="mt-6 flex flex-wrap gap-2">
-							{principles.map((principle) => (
-								<span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-700">
-									{principle}
-								</span>
-							))}
-						</div>
+					</div>
+					<div class="grid gap-4">
+						{
+							articles.length > 0 ? (
+								articles.map((article) => (
+									<a
+										href={`/articles/${article.id}/`}
+										class="group rounded-lg border border-slate-200 bg-white p-6 shadow-sm transition hover:border-cyan-700 hover:shadow"
+									>
+										<p class="text-sm font-medium text-slate-500">
+											<time datetime={article.data.publishedAt.toISOString()}>
+												{dateFormatter.format(article.data.publishedAt)}
+											</time>
+										</p>
+										<h3 class="mt-3 text-xl font-semibold text-slate-950 group-hover:text-cyan-700">
+											{article.data.title}
+										</h3>
+										<p class="mt-3 text-sm leading-7 text-slate-600">{article.data.description}</p>
+										<div class="mt-5 flex flex-wrap gap-2">
+											{article.data.tags.map((tag) => (
+												<span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600">
+													{tag}
+												</span>
+											))}
+										</div>
+									</a>
+								))
+							) : (
+								<div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+									<p class="text-base leading-8 text-slate-700">
+										記事コンテンツは準備中です。公開後はここに最新記事が表示されます。
+									</p>
+									<div class="mt-6 flex flex-wrap gap-2">
+										{principles.map((principle) => (
+											<span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-700">
+												{principle}
+											</span>
+										))}
+									</div>
+								</div>
+							)
+						}
+						{
+							latestArticle && (
+								<div class="flex flex-wrap gap-3">
+									<a
+										href={`/articles/${latestArticle.id}/`}
+										class="inline-flex min-h-11 items-center rounded-full border border-slate-300 px-4 text-sm font-semibold text-slate-700 transition hover:border-cyan-700 hover:text-cyan-700"
+									>
+										最新記事を読む
+									</a>
+									<a
+										href="/tags/"
+										class="inline-flex min-h-11 items-center rounded-full border border-slate-300 px-4 text-sm font-semibold text-slate-700 transition hover:border-cyan-700 hover:text-cyan-700"
+									>
+										タグ一覧
+									</a>
+								</div>
+							)
+						}
+						{
+							!latestArticle && (
+								<div>
+									<a
+										href="/tags/"
+										class="inline-flex min-h-11 items-center rounded-full border border-slate-300 px-4 text-sm font-semibold text-slate-700 transition hover:border-cyan-700 hover:text-cyan-700"
+									>
+										タグ一覧
+									</a>
+								</div>
+							)
+						}
 					</div>
 				</div>
 			</section>
@@ -179,7 +261,11 @@ const principles = ['小さく検証する', 'コードで確かめる', '知見
 		<footer class="bg-white">
 			<div class="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-8 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-8">
 				<p class="font-semibold text-slate-900">aidd.tokyo</p>
-				<p>AI駆動開発の学習・実践・共有コミュニティ</p>
+				<div class="flex flex-wrap gap-4">
+					<a href="/about/" class="transition hover:text-cyan-700">About</a>
+					<a href="/tags/" class="transition hover:text-cyan-700">Tags</a>
+					<p>AI駆動開発の学習・実践・共有コミュニティ</p>
+				</div>
 			</div>
 		</footer>
 	</body>
