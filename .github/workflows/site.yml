@@ -85,5 +85,9 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # Create the Pages project on the first deploy; subsequent runs are no-ops
+          # because the create command exits non-zero when the project already exists.
+          preCommands: |
+            wrangler pages project create aidd-tokyo --production-branch=main || true
           command: pages deploy dist --project-name=aidd-tokyo --branch=${{ github.head_ref || github.ref_name }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
