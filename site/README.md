@@ -9,7 +9,7 @@ AI駆動開発コミュニティ **aidd.tokyo** のWebサイト。Astro 6 ベー
 | フレームワーク | [Astro 6](https://astro.build/) (Content Collections + MDX) |
 | スタイル | [Tailwind CSS v4](https://tailwindcss.com/) (Vite Plugin) |
 | コンテンツ管理 | Markdown / MDX をGit管理 (CMSは使わない) |
-| ホスティング | [Cloudflare Pages](https://pages.cloudflare.com/) (予定) |
+| ホスティング | [Cloudflare Pages](https://pages.cloudflare.com/) (GitHub Actions + Wrangler でデプロイ) |
 | コメント | [giscus](https://giscus.app/) (GitHub Discussions 連携、後で追加) |
 | 検索 | [Pagefind](https://pagefind.app/) (後で追加) |
 
@@ -91,3 +91,55 @@ status: upcoming
 ```
 
 スキーマ詳細は `src/content.config.ts` を参照。
+
+## デプロイ (Cloudflare Pages)
+
+### 仕組み
+
+`.github/workflows/site.yml` の **check + build → deploy** ジョブで自動化されている。
+
+| トリガ | 動作 |
+|---|---|
+| `main` への push | 本番デプロイ (https://aidd.tokyo) |
+| `main` への PR | プレビューデプロイ (`*.aidd-tokyo.pages.dev`)、PR にコメントで URL が貼られる |
+| `site/**` 以外の変更 | スキップ |
+
+### 初回セットアップ手順 (1回だけ)
+
+1. **Cloudflare アカウントを用意** (https://dash.cloudflare.com/sign-up)
+2. **API トークン作成**
+   - https://dash.cloudflare.com/profile/api-tokens > **Create Token** > **Custom token**
+   - Permission: `Account` > `Cloudflare Pages` > `Edit`
+   - Account Resources: `Include` > 対象アカウント
+   - 生成された token をコピー
+3. **Account ID を確認**
+   - CF ダッシュボード右サイドバー、または `https://dash.cloudflare.com/<account_id>` の URL から
+4. **GitHub repo に Secrets を登録** (https://github.com/ohr486/aidd.tokyo/settings/secrets/actions)
+   - `CLOUDFLARE_API_TOKEN` = 手順2で作成した token
+   - `CLOUDFLARE_ACCOUNT_ID` = 手順3で確認した ID
+5. **CF Pages プロジェクトを作成**
+   - https://dash.cloudflare.com/?to=/:account/pages > **Create application** > **Pages** > **Direct Upload**
+   - Project name: `aidd-tokyo`
+   - 空のままで Create (実体は GitHub Actions から push される)
+6. **GitHub Actions Variable で有効化** (https://github.com/ohr486/aidd.tokyo/settings/variables/actions)
+   - `CLOUDFLARE_PAGES_ENABLED` = `true`
+   - これを設定するまで deploy ジョブはスキップされる (CI は通る)
+7. **カスタムドメイン設定** (任意)
+   - CF Pages の `aidd-tokyo` プロジェクト > **Custom domains** > **Set up a custom domain**
+   - `aidd.tokyo` を入力 (ネームサーバが Cloudflare 配下である必要あり)
+
+### ローカルからの手動デプロイ (緊急時)
+
+```bash
+cd site
+pnpm install
+pnpm build
+
+# 一度だけ wrangler でログイン
+pnpm dlx wrangler login
+
+# 本番にデプロイ
+pnpm dlx wrangler pages deploy dist --project-name=aidd-tokyo --branch=main
+```
+
+通常運用ではこのコマンドは不要。GitHub Actions が自動で実行する。

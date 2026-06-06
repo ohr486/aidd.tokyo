@@ -17,6 +17,11 @@
 - ルート直下に汎用ツールチェーン (npm workspaces / pnpm workspaces / Turborepo / Nx 等) はまだ導入されていない。複数サブプロジェクトを横断する必要が出てから検討する。
 - 作業対象のサブプロジェクトに `cd` してから、そのディレクトリのコマンド (例: `site/` なら `pnpm dev` / `pnpm build` / `pnpm check`) を実行する。
 
+## CI / デプロイ
+
+- `.github/workflows/site.yml` が `site/**` の変更に対して **check + build → Cloudflare Pages deploy** を実行する。`main` push は本番、PR はプレビュー。
+- 初回セットアップ (CF API token / Account ID / GitHub Variable) は `site/README.md` の「デプロイ (Cloudflare Pages)」節を参照。
+
 ## サブプロジェクト追加時の方針
 
 新しいサブプロジェクト (例: `site/` 内のWebアプリ) を立ち上げる際は:
