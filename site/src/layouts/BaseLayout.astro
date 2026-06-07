@@ -36,6 +36,7 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#0f172a" />
+    <link rel="alternate" type="application/rss+xml" title="aidd.tokyo RSS" href="/rss.xml" />
     {preloadImage && <link rel="preload" as="image" href={preloadImage.href} type={preloadImage.type} />}
     <Seo title={title} description={description} canonicalPath={canonicalPath} ogType={ogType} ogImage={ogImage} />
     <slot name="head" />
