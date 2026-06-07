@@ -1,0 +1,36 @@
+---
+interface FooterLink {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  maxWidth?: 'wide' | 'narrow';
+  links?: FooterLink[];
+  bordered?: boolean;
+}
+
+const { maxWidth = 'wide', links = [], bordered = true } = Astro.props;
+const maxWidthClass = maxWidth === 'narrow' ? 'max-w-4xl' : 'max-w-6xl';
+const tagline = 'AI駆動開発の学習・実践・共有コミュニティ';
+---
+
+<footer class:list={[bordered ? 'border-t border-slate-200 bg-white' : 'bg-white']}>
+  <div class:list={['mx-auto flex flex-col gap-3 px-5 py-8 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-8', maxWidthClass]}>
+    <p class="font-semibold text-slate-900">aidd.tokyo</p>
+    {
+      links.length > 0 ? (
+        <div class="flex flex-wrap gap-4">
+          {links.map((link) => (
+            <a href={link.href} class="transition hover:text-cyan-700">
+              {link.label}
+            </a>
+          ))}
+          <p>{tagline}</p>
+        </div>
+      ) : (
+        <p>{tagline}</p>
+      )
+    }
+  </div>
+</footer>

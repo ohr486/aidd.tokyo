@@ -1,0 +1,46 @@
+---
+import Seo from '../components/Seo.astro';
+import '../styles/global.css';
+
+interface PreloadImage {
+  href: string;
+  type?: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath: string;
+  ogType?: 'website' | 'article';
+  ogImage?: string;
+  preloadImage?: PreloadImage;
+  bodyClass?: string;
+}
+
+const {
+  title,
+  description,
+  canonicalPath,
+  ogType = 'website',
+  ogImage,
+  preloadImage,
+  bodyClass = 'bg-stone-50 text-slate-950 antialiased',
+} = Astro.props;
+---
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#0f172a" />
+    {preloadImage && <link rel="preload" as="image" href={preloadImage.href} type={preloadImage.type} />}
+    <Seo title={title} description={description} canonicalPath={canonicalPath} ogType={ogType} ogImage={ogImage} />
+    <slot name="head" />
+  </head>
+  <body class={bodyClass}>
+    <slot />
+  </body>
+</html>
