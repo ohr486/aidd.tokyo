@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import ArticleCard from '../components/ArticleCard.astro';
+import EventCard from '../components/EventCard.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -32,6 +33,10 @@ const articles = (await getCollection('articles', ({ data }) => !data.draft))
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
   .slice(0, 3);
 const latestArticle = articles[0];
+
+const upcomingEvents = (await getCollection('events', ({ data }) => !data.draft && data.status === 'upcoming'))
+  .sort((a, b) => a.data.date.getTime() - b.data.date.getTime())
+  .slice(0, 3);
 ---
 
 <BaseLayout
@@ -46,7 +51,7 @@ const latestArticle = articles[0];
       { href: '/about/', label: 'About' },
       { href: '#activities', label: '活動' },
       { href: '#journal', label: '記事' },
-      { href: '#events', label: 'イベント' },
+      { href: '/events/', label: 'イベント' },
     ]}
   />
 
@@ -83,7 +88,7 @@ const latestArticle = articles[0];
               活動を見る
             </a>
             <a
-              href="#events"
+              href="/events/"
               class="inline-flex min-h-12 items-center justify-center rounded-full border border-white/30 px-5 text-sm font-semibold text-white transition hover:bg-white/12"
             >
               イベント情報
@@ -186,18 +191,32 @@ const latestArticle = articles[0];
             初回イベントに向けてテーマと運営形式を設計しています。公開後はこのページから予定と参加方法を確認できます。
           </p>
         </div>
-        <div class="grid gap-4 sm:grid-cols-3">
-          <div class="rounded-lg border border-white/12 bg-white/8 p-5">
-            <p class="text-sm font-semibold text-cyan-200">01</p>
-            <p class="mt-3 text-base font-semibold">実装デモ</p>
-          </div>
-          <div class="rounded-lg border border-white/12 bg-white/8 p-5">
-            <p class="text-sm font-semibold text-cyan-200">02</p>
-            <p class="mt-3 text-base font-semibold">ワークショップ</p>
-          </div>
-          <div class="rounded-lg border border-white/12 bg-white/8 p-5">
-            <p class="text-sm font-semibold text-cyan-200">03</p>
-            <p class="mt-3 text-base font-semibold">知見共有</p>
+        <div class="grid gap-4">
+          {
+            upcomingEvents.length > 0 ? (
+              upcomingEvents.map((event) => <EventCard event={event} headingLevel={3} />)
+            ) : (
+              <div class="rounded-lg border border-white/12 bg-white/8 p-6">
+                <p class="text-base leading-8 text-slate-200">
+                  開催予定のイベントは準備中です。公開後は日時、会場、参加方法をここに表示します。
+                </p>
+                <div class="mt-6 flex flex-wrap gap-2">
+                  {['実装デモ', 'ワークショップ', '知見共有'].map((activity) => (
+                    <span class="rounded-full border border-white/15 bg-white/8 px-3 py-1.5 text-sm font-medium text-slate-200">
+                      {activity}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )
+          }
+          <div>
+            <a
+              href="/events/"
+              class="inline-flex min-h-11 items-center rounded-full border border-white/30 px-4 text-sm font-semibold text-white transition hover:bg-white/12"
+            >
+              イベント一覧
+            </a>
           </div>
         </div>
       </div>
@@ -209,6 +228,7 @@ const latestArticle = articles[0];
     links={[
       { href: '/about/', label: 'About' },
       { href: '/articles/', label: 'Articles' },
+      { href: '/events/', label: 'Events' },
       { href: '/tags/', label: 'Tags' },
     ]}
   />
