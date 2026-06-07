@@ -1,0 +1,82 @@
+---
+import { getCollection, render } from 'astro:content';
+import SiteFooter from '../../components/SiteFooter.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles', ({ data }) => !data.draft);
+
+  return articles.map((article) => ({
+    params: { slug: article.id },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const { Content } = await render(article);
+
+const dateFormatter = new Intl.DateTimeFormat('ja-JP', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const publishedAt = dateFormatter.format(article.data.publishedAt);
+const articlePath = `/articles/${article.id}/`;
+const ogImage = article.data.ogImage?.src;
+---
+
+<BaseLayout
+  title={`${article.data.title} — aidd.tokyo`}
+  description={article.data.description}
+  canonicalPath={articlePath}
+  ogType="article"
+  ogImage={ogImage}
+>
+  <SiteHeader
+    maxWidth="narrow"
+    links={[
+      { href: '/articles/', label: '記事一覧' },
+      { href: '/events/', label: 'イベント' },
+      { href: '/tags/', label: 'タグ' },
+    ]}
+  />
+
+  <main>
+    <article class="mx-auto max-w-4xl px-5 py-14 sm:px-8 sm:py-18">
+      <div class="flex flex-wrap gap-3">
+        <a href="/articles/" class="inline-flex min-h-10 items-center rounded-full border border-slate-300 px-4 text-sm font-semibold text-slate-700 transition hover:border-cyan-700 hover:text-cyan-700">
+          記事一覧へ
+        </a>
+        <a href="/tags/" class="inline-flex min-h-10 items-center rounded-full border border-slate-300 px-4 text-sm font-semibold text-slate-700 transition hover:border-cyan-700 hover:text-cyan-700">
+          タグ一覧
+        </a>
+      </div>
+
+      <header class="mt-10 border-b border-slate-200 pb-10">
+        <p class="text-sm font-medium text-cyan-700">
+          <time datetime={article.data.publishedAt.toISOString()}>{publishedAt}</time>
+        </p>
+        <h1 class="mt-4 text-4xl font-bold leading-tight text-slate-950 sm:text-5xl">{article.data.title}</h1>
+        <p class="mt-5 text-lg leading-8 text-slate-600">{article.data.description}</p>
+        <div class="mt-6 flex flex-wrap gap-2">
+          {article.data.tags.map((tag) => (
+            <a
+              href={`/tags/${encodeURIComponent(tag)}/`}
+              class="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:border-cyan-700 hover:text-cyan-700"
+            >
+              {tag}
+            </a>
+          ))}
+        </div>
+      </header>
+
+      <div class="article-content mt-10">
+        <Content />
+      </div>
+    </article>
+  </main>
+
+  <SiteFooter maxWidth="narrow" />
+</BaseLayout>
